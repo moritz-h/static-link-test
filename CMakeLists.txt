@@ -9,8 +9,13 @@ add_library(core STATIC core.cpp core.h)
 
 add_executable(main main.cpp)
 
-target_link_libraries(main PUBLIC
-  -Wl,--whole-archive
-  core
-  plugin
-  -Wl,--no-whole-archive)
+if (WIN32)
+  target_link_libraries(main PUBLIC core plugin)
+  target_link_options(main PUBLIC "/WHOLEARCHIVE:core" "/WHOLEARCHIVE:plugin")
+else ()
+  target_link_libraries(main PUBLIC
+    -Wl,--whole-archive
+    core
+    plugin
+    -Wl,--no-whole-archive)
+endif ()
